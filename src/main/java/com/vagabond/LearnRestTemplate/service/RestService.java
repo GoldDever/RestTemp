@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Service
 public class RestService {
+
     private final RestTemplate restTemplate;
 
     private String url = "http://91.241.64.178:7081/api/users";
@@ -24,7 +25,7 @@ public class RestService {
                 .setConnectTimeout(Duration.ofSeconds(500))
                 .setReadTimeout(Duration.ofSeconds(500))
                 .build();
-    } 
+    }
 
     public String getUsersPlainJSON() {
         return this.restTemplate.getForObject(url, String.class);
@@ -35,6 +36,7 @@ public class RestService {
     }
 
     public User[] getUsersWithCookies() {
+
         // create headers
         HttpHeaders headers = new HttpHeaders();
 
@@ -52,6 +54,7 @@ public class RestService {
     }
 
     public User getUserWithResponseHandling() {
+
         ResponseEntity<User> response = this.restTemplate.getForEntity(urlWithId, User.class, 1);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
@@ -95,7 +98,6 @@ public class RestService {
     }
 
     public User createUserWithObject() {
-        String url = "https://jsonplaceholder.typicode.com/posts";
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -113,10 +115,8 @@ public class RestService {
         // build the request
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
-        System.out.println("Created user: " + user);
-
         // send POST request
-        return restTemplate.postForObject(url, entity, User.class);
+        return this.restTemplate.postForObject(url, entity, User.class);
     }
 
     public void updateUser() {
