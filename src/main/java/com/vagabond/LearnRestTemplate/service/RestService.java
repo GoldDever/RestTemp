@@ -52,7 +52,7 @@ public class RestService {
         }
     }
 
-    public String createUser() {
+    public User createUser() {
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -72,7 +72,7 @@ public class RestService {
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send POST request
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST, entity, User.class);
 
         // check response status code
         if(response.getStatusCode() == HttpStatus.CREATED) {
@@ -128,7 +128,7 @@ public class RestService {
         this.restTemplate.put(urlWithId, entity, 3);
     }
 
-    public User updateUserWithResponse() {
+    public String updateUserWithResponse() {
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -149,8 +149,8 @@ public class RestService {
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send PUT request to update post with `id` 3
-        ResponseEntity<User> response = this.restTemplate.exchange(
-                urlWithId, HttpMethod.PUT, entity, User.class, 3
+        ResponseEntity<String> response = restTemplate.exchange(
+                urlWithId, HttpMethod.PUT, entity, String.class
         );
 
         // check response status code
