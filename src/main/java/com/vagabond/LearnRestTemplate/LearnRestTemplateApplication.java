@@ -33,7 +33,7 @@ public class LearnRestTemplateApplication implements CommandLineRunner {
 		}
 
 		// create user
-		restService.createUserWithObject();
+		restService.createUser();
 
 		// update user
 		restService.updateUserWithResponse();
