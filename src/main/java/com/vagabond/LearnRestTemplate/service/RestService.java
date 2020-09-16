@@ -52,7 +52,7 @@ public class RestService {
         }
     }
 
-    public User createUser() {
+    public String createUser() {
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -72,7 +72,7 @@ public class RestService {
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send POST request
-        ResponseEntity<User> response = this.restTemplate.postForEntity(url, entity, User.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         // check response status code
         if(response.getStatusCode() == HttpStatus.CREATED) {
