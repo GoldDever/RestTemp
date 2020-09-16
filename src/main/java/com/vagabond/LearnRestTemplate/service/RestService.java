@@ -22,25 +22,17 @@ public class RestService {
     private String urlWithId = "http://91.241.64.178:7081/api/users/{id}";
     private String cookies;
 
-    /*
-    public RestService(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(500))
-                .setReadTimeout(Duration.ofSeconds(500))
-                .build();
-    }*/
-
     public String getUsersPlainJSON() {
-        return restTemplate.getForObject(url, String.class);
+        return this.restTemplate.getForObject(url, String.class);
     }
 
     public User[] getUsersAsObject() {
-        return restTemplate.getForObject(url, User[].class);
+        return this.restTemplate.getForObject(url, User[].class);
     }
 
     public User[] getUsersWithCookies() {
 
-        ResponseEntity<User[]> response = restTemplate.getForEntity(url, User[].class);
+        ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
 
         cookies = response.getHeaders().get("Set-Cookie").get(0);
 
@@ -48,12 +40,11 @@ public class RestService {
     }
 
     public User getUserWithUrlParameters() {
-        return restTemplate.getForObject(urlWithId, User.class, 1);
+        return this.restTemplate.getForObject(urlWithId, User.class, 1);
     }
 
     public User getUserWithResponseHandling() {
-
-        ResponseEntity<User> response = restTemplate.getForEntity(urlWithId, User.class, 1);
+        ResponseEntity<User> response = this.restTemplate.getForEntity(urlWithId, User.class, 1);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
         } else {
@@ -75,14 +66,13 @@ public class RestService {
         // set `cookie` header
         headers.set("Cookie", cookies);
 
-        // create User
-        User user = new User((long) 3,"James", "Brown", (byte) 73);
+        User user = new User("James", "Brown", (byte) 73);
 
         // build the request
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send POST request
-        ResponseEntity<User> response = restTemplate.postForEntity(url, entity, User.class);
+        ResponseEntity<User> response = this.restTemplate.postForEntity(url, entity, User.class);
 
         // check response status code
         if(response.getStatusCode() == HttpStatus.CREATED) {
@@ -135,7 +125,7 @@ public class RestService {
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send PUT request to update user with `id` 3
-        restTemplate.put(urlWithId, entity, 3);
+        this.restTemplate.put(urlWithId, entity, 3);
     }
 
     public User updateUserWithResponse() {
@@ -158,8 +148,8 @@ public class RestService {
         // build the request
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
-        // send PUT request to update post with `id` 10
-        ResponseEntity<User> response = restTemplate.exchange(
+        // send PUT request to update post with `id` 3
+        ResponseEntity<User> response = this.restTemplate.exchange(
                 urlWithId, HttpMethod.PUT, entity, User.class, 3
         );
 
@@ -174,6 +164,6 @@ public class RestService {
     public void deleteUser() {
 
         // send DELETE request to delete user with `id` 3
-        restTemplate.delete(urlWithId, 3);
+        this.restTemplate.delete(urlWithId, 3);
     }
 }

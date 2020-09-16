@@ -47,7 +47,7 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public Byte getAge() {
+    public int getAge() {
         return age;
     }
 
