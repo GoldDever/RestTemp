@@ -27,10 +27,8 @@ public class LearnRestTemplateApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// fetch users with cookies
-		for (User user: restService.getUsersWithCookies()) {
-			System.out.println(user);
-		}
+		// get all users
+		restService.getUsersWithCookies();
 
 		// create user
 		restService.createUser();
