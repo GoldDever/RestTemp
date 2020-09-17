@@ -6,6 +6,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 
 @Service
@@ -19,40 +21,19 @@ public class RestService {
     }
 
     private String url = "http://91.241.64.178:7081/api/users";
-    private String urlWithId = "http://91.241.64.178:7081/api/users/{id}";
+    private String urlWithId = "http://91.241.64.178:7081/api/users/3";
     private String cookies;
-
-    public String getUsersPlainJSON() {
-        return this.restTemplate.getForObject(url, String.class);
-    }
-
-    public User[] getUsersAsObject() {
-        return this.restTemplate.getForObject(url, User[].class);
-    }
 
     public User[] getUsersWithCookies() {
 
-        ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
+        ResponseEntity<User[]> response = restTemplate.getForEntity(url, User[].class);
 
         cookies = response.getHeaders().get("Set-Cookie").get(0);
 
         return response.getBody();
     }
 
-    public User getUserWithUrlParameters() {
-        return this.restTemplate.getForObject(urlWithId, User.class, 1);
-    }
-
-    public User getUserWithResponseHandling() {
-        ResponseEntity<User> response = this.restTemplate.getForEntity(urlWithId, User.class, 1);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
-        } else {
-            return null;
-        }
-    }
-
-    public User createUser() {
+    public String createUser() throws URISyntaxException {
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -66,13 +47,16 @@ public class RestService {
         // set `cookie` header
         headers.set("Cookie", cookies);
 
-        User user = new User("James", "Brown", (byte) 73);
+        User user = new User((long) 3, "James", "Brown", (byte) 73);
 
         // build the request
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
 
         // send POST request
-        ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST, entity, User.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        System.out.print("You code is: ");
+        System.out.print(response.getBody());
 
         // check response status code
         if(response.getStatusCode() == HttpStatus.CREATED) {
@@ -82,53 +66,7 @@ public class RestService {
         }
     }
 
-    public User createUserWithObject() {
-
-        // create headers
-        HttpHeaders headers = new HttpHeaders();
-        // set `content-type` header
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        // set `accept` header
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        // set `cookie` header
-        headers.set("Cookie", cookies);
-
-        // create a post object
-        User user = new User((long) 3,"James", "Brown", (byte)73);
-
-        // build the request
-        HttpEntity<User> entity = new HttpEntity<>(user, headers);
-
-        // send POST request
-        return restTemplate.postForObject(url, entity, User.class);
-    }
-
-    public void updateUser() {
-
-        // create headers
-        HttpHeaders headers = new HttpHeaders();
-
-        // set `content-type` header
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // set `accept` header
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        // set `cookie` header
-        headers.set("Cookie", cookies);
-
-        // create a user object
-        User user = new User((long) 3,"Thomas", "Shelby", (byte)50);
-
-        // build the request
-        HttpEntity<User> entity = new HttpEntity<>(user, headers);
-
-        // send PUT request to update user with `id` 3
-        this.restTemplate.put(urlWithId, entity, 3);
-    }
-
-    public String updateUserWithResponse() {
+    public String updateUser() {
 
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -150,8 +88,10 @@ public class RestService {
 
         // send PUT request to update post with `id` 3
         ResponseEntity<String> response = restTemplate.exchange(
-                urlWithId, HttpMethod.PUT, entity, String.class
+                url, HttpMethod.PUT, entity, String.class, 3
         );
+
+        System.out.print(response.getBody());
 
         // check response status code
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -161,9 +101,35 @@ public class RestService {
         }
     }
 
-    public void deleteUser() {
+    public String deleteUser() {
+
+        // create headers
+        HttpHeaders headers = new HttpHeaders();
+
+        // set `content-type` header
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // set `accept` header
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // set `cookie` header
+        headers.set("Cookie", cookies);
+
+        // build the request
+        HttpEntity<User> entity = new HttpEntity<>(headers);
 
         // send DELETE request to delete user with `id` 3
-        this.restTemplate.delete(urlWithId, 3);
+        ResponseEntity<String> response = restTemplate.exchange(
+                urlWithId, HttpMethod.DELETE, entity, String.class
+        );
+
+        System.out.println(response.getBody());
+
+        // check response status code
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            return null;
+        }
     }
 }

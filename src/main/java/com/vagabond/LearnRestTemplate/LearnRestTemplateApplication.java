@@ -35,12 +35,8 @@ public class LearnRestTemplateApplication implements CommandLineRunner {
 		// create user
 		restService.createUser();
 
-		for (User user: restService.getUsersWithCookies()) {
-			System.out.println(user);
-		}
-
 		// update user
-		restService.updateUserWithResponse();
+		restService.updateUser();
 
 		// delete user
 		restService.deleteUser();
