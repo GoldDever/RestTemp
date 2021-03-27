@@ -17,6 +17,7 @@ public class RestService {
 
     @Autowired
     public RestService(RestTemplate restTemplate) {
+
         this.restTemplate = restTemplate;
     }
 
